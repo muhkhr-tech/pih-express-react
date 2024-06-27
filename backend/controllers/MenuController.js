@@ -41,7 +41,60 @@ const createMenu = async (req, res) => {
     }
 }
 
+const updateMenu = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const menu = await prisma.menu.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                name: req.body.name,
+                description: req.body.description,
+                price: Number(req.body.price)
+            }
+        })
+
+        res.status(200).send({
+            success: true,
+            message: "Menu updated successfully.",
+            data: menu
+        })
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
+const deleteMenu = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const menu = await prisma.menu.delete({
+            where: {
+                id: Number(id)
+            }
+        })
+
+        res.status(200).send({
+            success: true,
+            message: "Menu deleted successfully.",
+            data: menu
+        })
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
 module.exports = {
     findMenus, 
-    createMenu
+    createMenu,
+    updateMenu,
+    deleteMenu
 }
