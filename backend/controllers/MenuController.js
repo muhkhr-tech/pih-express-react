@@ -1,6 +1,6 @@
 const prisma = require('../prisma/client')
 
-const findMenu = async (req, res) => {
+const findMenus = async (req, res) => {
 
     const menus = await prisma.menu.findMany({
         select: {
@@ -19,5 +19,5 @@ const findMenu = async (req, res) => {
 }
 
 module.exports = {
-    findMenu
+    findMenus
 }
