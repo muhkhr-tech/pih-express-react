@@ -18,6 +18,30 @@ const findMenus = async (req, res) => {
     })
 }
 
+const createMenu = async (req, res) => {
+    try {
+        const menu = await prisma.menu.create({
+            data: {
+                name: req.body.name,
+                description: req.body.description,
+                price: Number(req.body.price)
+            }
+        })
+
+        res.status(201).send({
+            success: true,
+            message: "Menu created successfully.",
+            data: menu
+        })
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
 module.exports = {
-    findMenus
+    findMenus, 
+    createMenu
 }
