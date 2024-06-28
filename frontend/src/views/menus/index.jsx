@@ -6,7 +6,7 @@ export default function MenuIndex() {
 
   const fetchDataMenu = async () => {
     try {
-      const response = await api.get('/api/menus')
+      const response = await api.get('/api/menus?active=true')
 
       setMenus(response.data.data)
     } catch (error) {
