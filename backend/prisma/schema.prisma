@@ -59,3 +59,52 @@ model Customer {
 
   @@map("customers")
 }
+
+model Material {
+  id          Int      @id @default(autoincrement())
+  name String @db.VarChar(255)
+  price Int
+  unit String @db.VarChar(20)
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  stores MaterialsOnStore[]
+
+  @@map("materials")
+}
+
+model Store {
+  id          Int      @id @default(autoincrement())
+  name String @db.VarChar(255)
+  phone String @db.VarChar(15)
+  address String @db.VarChar(255)
+  active      Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  materials MaterialsOnStore[]
+
+  @@map("stores")
+}
+
+model MaterialsOnStore {
+  material    Material @relation(fields: [materialId], references: [id])
+  materialId     Int
+  store   Store @relation(fields: [storeId], references: [id])
+  storeId Int
+  price Int
+  amount Int
+  unit String @db.VarChar(10)
+
+  @@id([materialId, storeId])
+}
+
+model Purchase {
+  id          Int      @id @default(autoincrement())
+  purchaseDate DateTime
+  description String @db.VarChar(255)
+  price Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("purchases")
+}
