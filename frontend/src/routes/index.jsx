@@ -4,6 +4,7 @@ import AdminMenuIndex from "../views/admin/menus";
 import AdminMenuCreate from "../views/admin/menus/create";
 import AdminMenuEdit from "../views/admin/menus/edit";
 import Index from "../views";
+import SellingIndex from "../views/sellings";
 
 export default function AppRoutes() {
     return (
@@ -14,6 +15,8 @@ export default function AppRoutes() {
 
             <Route path="/" element={<Index/>}/>
             <Route path="/menus" element={<MenuIndex/>}/>
+
+            <Route path="/sellings" element={<SellingIndex/>}/>
         </Routes>
     )
 }

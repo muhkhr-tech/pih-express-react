@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `sellings` ADD COLUMN `ongkir` INTEGER NOT NULL DEFAULT 0;
