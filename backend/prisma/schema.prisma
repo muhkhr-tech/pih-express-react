@@ -15,49 +15,39 @@ model Menu {
   active      Boolean @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  sellings MenusOnSellings[]
+  sales MenusOnSales[]
 
   @@map("menus")
 }
 
-model Selling {
+model Sale {
   id          Int      @id @default(autoincrement())
-  sellingDate DateTime
+  saleDate DateTime
   description String @db.VarChar(255)
   customerName String @db.VarChar(255)
   customerPhone String @db.VarChar(15)
   customerAddress String @db.VarChar(255)
   ongkir Int @default(0)
+  price Int @default(0)
   active      Boolean @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  menus MenusOnSellings[]
+  menus MenusOnSales[]
 
-  @@map("sellings")
+  @@map("sales")
 }
 
-model MenusOnSellings {
+model MenusOnSales {
   menu       Menu     @relation(fields: [menuId], references: [id])
   menuId     Int
-  selling   Selling @relation(fields: [sellingId], references: [id])
-  sellingId Int
+  sale   Sale @relation(fields: [saleId], references: [id])
+  saleId Int
   price Int
   amount Int
   unit String @db.VarChar(10)
 
-  @@id([menuId, sellingId])
-}
-
-model Customer {
-  id          Int      @id @default(autoincrement())
-  name String @db.VarChar(50)
-  phone String @db.VarChar(15)
-  address String @db.VarChar(255)
-  active      Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("customers")
+  @@id([menuId, saleId])
+  @@map("menus_on_sale")
 }
 
 model Material {
@@ -68,34 +58,9 @@ model Material {
   active      Boolean @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  stores MaterialsOnStore[]
+  purchases MaterialsOnPurchase[]
 
   @@map("materials")
-}
-
-model Store {
-  id          Int      @id @default(autoincrement())
-  name String @db.VarChar(255)
-  phone String @db.VarChar(15)
-  address String @db.VarChar(255)
-  active      Boolean @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  materials MaterialsOnStore[]
-
-  @@map("stores")
-}
-
-model MaterialsOnStore {
-  material    Material @relation(fields: [materialId], references: [id])
-  materialId     Int
-  store   Store @relation(fields: [storeId], references: [id])
-  storeId Int
-  price Int
-  amount Int
-  unit String @db.VarChar(10)
-
-  @@id([materialId, storeId])
 }
 
 model Purchase {
@@ -103,8 +68,25 @@ model Purchase {
   purchaseDate DateTime
   description String @db.VarChar(255)
   price Int
+  storeName String @db.VarChar(255)
+  storePhone String @db.VarChar(15)
+  storeAddress String @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  materials MaterialsOnPurchase[]
 
   @@map("purchases")
+}
+
+model MaterialsOnPurchase {
+  material    Material @relation(fields: [materialId], references: [id])
+  materialId     Int
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+  purchaseId Int
+  price Int
+  amount Int
+  unit String @db.VarChar(10)
+
+  @@id([materialId, purchaseId])
+  @@map("materials_on_purchase")
 }
