@@ -1,3 +1,4 @@
+const { validationResult } = require('express-validator')
 const prisma = require('../../prisma/client')
 
 const findMenus = async (req, res) => {
@@ -42,6 +43,16 @@ const findMenuById = async (req, res) => {
 }
 
 const createMenu = async (req, res) => {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+            success: false,
+            message: "Validation error",
+            errors: errors.array()
+        })
+    }
+
     try {
         const menu = await prisma.menu.create({
             data: {

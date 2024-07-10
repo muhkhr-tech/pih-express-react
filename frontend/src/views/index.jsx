@@ -3,21 +3,21 @@ import api from "../services/api"
 import Navbar from "../components/Navbar"
 
 export default function Index() {
-  let initChart = []
+  let initCart = []
   let initTotalItem = 0
 
-  if (localStorage.getItem('chart')) {
-    if (JSON.parse(localStorage.getItem('chart')).length >= 0) {
-      initChart = JSON.parse(localStorage.getItem('chart'))
+  if (localStorage.getItem('cart')) {
+    if (JSON.parse(localStorage.getItem('cart')).length >= 0) {
+      initCart = JSON.parse(localStorage.getItem('cart'))
     }
   }
 
-  if (localStorage.getItem('chartTotalItem')) {
-    initTotalItem = localStorage.getItem('chartTotalItem')
+  if (localStorage.getItem('cartTotalItem')) {
+    initTotalItem = localStorage.getItem('cartTotalItem')
   }
 
   const [menus, setMenus] = useState([])
-  const [chart, setChart] = useState(initChart)
+  const [cart, setCart] = useState(initCart)
   const [totalItem, setTotalItem] = useState(initTotalItem)
 
   const fetchDataMenu = async () => {
@@ -34,13 +34,13 @@ export default function Index() {
     fetchDataMenu()
   }, [])
 
-  const addToChart = async (menu) => {
-    const updateChart = [...chart]
-    let itemIndex = updateChart.findIndex((item) => item.id == menu.id)
+  const addToCart = async (menu) => {
+    const updateCart = [...cart]
+    let itemIndex = updateCart.findIndex((item) => item.id == menu.id)
 
     if (itemIndex > -1) {
-      updateChart[itemIndex].amount += 1
-      setChart([...updateChart])
+      updateCart[itemIndex].amount += 1
+      setCart([...updateCart])
     } else {
       menu.amount = 1
       menu.unit = 'porsi'
@@ -49,34 +49,34 @@ export default function Index() {
           id: menu.id
         }
       }
-      setChart([...chart, menu])
+      setCart([...cart, menu])
       setTotalItem(parseInt(totalItem) + 1)
     }
   }
 
   useEffect(() => {
-    localStorage.setItem('chart', JSON.stringify(chart))
-    localStorage.setItem('chartTotalItem', chart.length)
-  }, [chart, totalItem])
+    localStorage.setItem('cart', JSON.stringify(cart))
+    localStorage.setItem('cartTotalItem', cart.length)
+  }, [cart, totalItem])
 
   return (
     <div>
       <Navbar totalItem={totalItem}/>
       <div className="container">
-        <div className="row">
+        <div className="row" id="container-menu">
           {
             menus.length > 0
               ? menus.map((menu, index) => (
                 <div className="col-md-3 mb-3" key={index}>
                   <div className={"card shadow shadow-sm"} style={{minHeight: '260px', maxHeight: '260px'}}>
-                    {chart.findIndex((item) => item.id == menu.id) > -1
+                    {cart.findIndex((item) => item.id == menu.id) > -1
                       ? (<span className="bg-warning badge" style={{ position: 'absolute', top: '5px', right: '10px' }}>
-                        {chart[chart.findIndex((item) => item.id == menu.id)].amount} porsi</span>) : ''}
+                        {cart[cart.findIndex((item) => item.id == menu.id)].amount} porsi</span>) : ''}
                     <div className="card-body">
                       <h5 className="card-title">{menu.name}</h5>
                       <h6 className="card-subtitle mb-2 text-muted">Rp{menu.price}</h6>
                       <p className="card-text" style={{fontSize: '13px', minHeight: '70px', maxHeight: '70px'}}>{menu.description}</p>
-                      <button onClick={() => addToChart(menu)} className="card-link btn btn-outline-primary w-100">Add to chart</button>
+                      <button onClick={() => addToCart(menu)} className="card-link btn btn-outline-primary w-100">Add to cart</button>
                     </div>
                   </div>
                 </div>

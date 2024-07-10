@@ -8,7 +8,10 @@ const findMaterials = async (req, res) => {
     if (search) {
         materials = await prisma.material.findMany({
             where: {
-                name: search
+                name: {
+                    contains: search
+                    
+                }
             },
             select: {
                 id: true,
@@ -19,6 +22,7 @@ const findMaterials = async (req, res) => {
         })
     } else {
         materials = await prisma.material.findMany({
+            take: 8,
             select: {
                 id: true,
                 name: true,

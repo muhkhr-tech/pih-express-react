@@ -3,90 +3,89 @@ import api from "../../services/api"
 import { useNavigate } from "react-router-dom"
 import Navbar from "../../components/Navbar"
 
-export default function SellingIndex() {
+export default function SaleIndex() {
   const navigate = useNavigate()
 
-  const [sellingDate, setSellingDate] = useState('')
+  const [saleDate, setSaleDate] = useState('')
   const [description, setDescription] = useState('Penjualan makanan')
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [customerAddress, setCustomerAddress] = useState('')
   const [ongkir, setOngkir] = useState(0)
+  const [price, setPrice] = useState(0)
   const [customers, setCustomers] = useState([])
+  const [isSaveCustomer, setIsSaveCustomer] = useState(false)
+  const [validation, setValidation] = useState([])
 
-  let initChart = []
-  let initTotal = 0
+  let initCart = []
   let initTotalItem = 0
   let updatedTotal = 0
 
-  if (localStorage.getItem('chart')) {
-    if (JSON.parse(localStorage.getItem('chart')).length >= 0) {
-      initChart = JSON.parse(localStorage.getItem('chart'))
+  if (localStorage.getItem('cart')) {
+    if (JSON.parse(localStorage.getItem('cart')).length >= 0) {
+      initCart = JSON.parse(localStorage.getItem('cart'))
     }
   }
 
-  if (localStorage.getItem('chartTotalItem')) {
-    initTotalItem = localStorage.getItem('chartTotalItem')
+  if (localStorage.getItem('cartTotalItem')) {
+    initTotalItem = localStorage.getItem('cartTotalItem')
   }
 
-  if (localStorage.getItem('chartTotalPrice')) {
-    initTotal = JSON.parse(localStorage.getItem('chartTotalPrice'))
-  }
-
-  const [chart, setChart] = useState(initChart)
-  const [total, setTotal] = useState(initTotal)
+  const [cart, setCart] = useState(initCart)
   const [totalItem, setTotalItem] = useState(initTotalItem)
   const [isUpdateTotal, setIsUpdteTotal] = useState(false)
 
-  const createSelling = async (e) => {
+  const createSale = async (e) => {
     e.preventDefault()
 
-    try {
-      let updatedChart = initChart.map(item => {
-        let { id, name, description, active, ...rest } = item
-        return rest
-      })
+    let updatedCart = initCart.map(item => {
+      let { id, name, description, active, ...rest } = item
+      return rest
+    })
 
-      await api.post('/api/sellings', {
-        sellingDate: sellingDate,
-        description: description,
-        customerName: customerName,
-        customerPhone: customerPhone,
-        customerAddress: customerAddress,
-        ongkir: ongkir,
-        menus: updatedChart
+    if (isSaveCustomer) {
+      await api.post('/api/customers', {
+        name: customerName,
+        phone: customerPhone,
+        address: customerAddress
       })
-        .then(() => {
-          navigate('/')
-          localStorage.removeItem('chart')
-          localStorage.removeItem('chartTotalItem')
-          localStorage.removeItem('chartTotalPrice')
-        })
-
-    } catch (error) {
-      console.error("There was an error create selling!", error);
     }
+
+    await api.post('/api/sales', {
+      saleDate: saleDate,
+      description: description,
+      customerName: customerName,
+      customerPhone: customerPhone,
+      customerAddress: customerAddress,
+      ongkir: ongkir,
+      price: price,
+      menus: updatedCart
+    })
+      .then(() => {
+        navigate('/')
+        localStorage.removeItem('cart')
+        localStorage.removeItem('cartTotalItem')
+        localStorage.removeItem('cartTotalPrice')
+      })
+      .catch(error => {
+        setValidation(error.response.data)
+      })
   }
 
   const plusItem = (item) => {
-    const updateItem = [...chart]
+    const updateItem = [...cart]
     const indexItem = updateItem.findIndex((obj) => obj.id == item.id)
 
     if (indexItem > -1) {
       updateItem[indexItem].amount += 1
     }
 
-    setChart([...updateItem])
+    setCart([...updateItem])
     setIsUpdteTotal(!isUpdateTotal)
-    for (let i = 0; i < document.getElementsByClassName('subTotal').length; i++) {
-      updatedTotal += parseInt(document.getElementsByClassName('subTotal')[i].textContent)
-      setTotal(updatedTotal)
-      console.log(document.getElementsByClassName('subTotal')[i], 'plus')
-    }
   }
 
   const minusItem = (item) => {
-    let updateItem = [...chart]
+    let updateItem = [...cart]
     const indexItem = updateItem.findIndex((obj) => obj.id == item.id)
 
     if (indexItem > -1) {
@@ -94,31 +93,30 @@ export default function SellingIndex() {
         updateItem[indexItem].amount -= 1
       } else {
         updateItem = updateItem.filter((obj) => obj.id != item.id)
-        setTotalItem(chart.length)
+        setTotalItem(cart.length)
       }
     }
 
-    setChart([...updateItem])
+    setCart([...updateItem])
     setIsUpdteTotal(!isUpdateTotal)
-    for (let i = 0; i < document.getElementsByClassName('subTotal').length; i++) {
-      updatedTotal += parseInt(document.getElementsByClassName('subTotal')[i].textContent)
-      setTotal(updatedTotal)
-    }
   }
 
   useEffect(() => {
-    localStorage.setItem('chart', JSON.stringify(chart))
-    localStorage.setItem('chartTotalPrice', JSON.stringify(total))
-    localStorage.setItem('chartTotalItem', chart.length)
+    localStorage.setItem('cart', JSON.stringify(cart))
+    localStorage.setItem('cartTotalItem', cart.length)
 
-    if (chart.length < 1) {
-      setTotal(0)
+    for (let i = 0; i < document.getElementsByClassName('subTotal').length; i++) {
+      updatedTotal += parseInt(document.getElementsByClassName('subTotal')[i].textContent)
     }
+    if (!isNaN(ongkir)) {
+      updatedTotal += ongkir
+    }
+    setPrice(updatedTotal)
 
-    if (chart.length < 1) {
+    if (cart.length < 1) {
       navigate('/')
     }
-  }, [isUpdateTotal, total, chart, totalItem])
+  }, [isUpdateTotal, cart, totalItem, ongkir])
 
   const fetchDataCustomers = async () => {
     try {
@@ -148,9 +146,20 @@ export default function SellingIndex() {
       <div className="container">
         <div className="row">
           {
-            chart.length > 0
+            validation.errors && (
+              <div className="alert alert-danger mt-2 pb-0">
+                {
+                  validation.errors.map((error, index) => (
+                    <p key={index}>{error.msg}</p>
+                  ))
+                }
+              </div>
+            )
+          }
+          {
+            cart.length > 0
               ? <div className="col-md-6">
-                {chart.map((item, index) => (
+                {cart.map((item, index) => (
                   <div className="card mb-1 border-0" key={index}>
                     <div className="card-body">
                       <div className="d-flex justify-content-between">
@@ -172,23 +181,20 @@ export default function SellingIndex() {
                     </div>
                   </div>
                 ))}
-                <div className="bg-light rounded-1 px-5 py-3 mt-2 mb-5 d-flex justify-content-between">
-                  <h4 className="mb-0">Total</h4> <h4 className="mb-0">Rp{total}</h4>
-                </div>
               </div>
               : <p>Data belum tersedia!</p>
           }
 
           {
-            chart.length > 0
+            cart.length > 0
             && <div className="col-md-6">
               <div className="card border-0">
                 <div className="card-body">
                   <h5 className="card-title mb-5">Data Penjualan</h5>
-                  <form onSubmit={createSelling}>
+                  <form onSubmit={createSale}>
                     <div className="form-group mb-3">
                       <label className="mb-1 fw-bold">Tanggal Jual</label>
-                      <input type="date" value={sellingDate} onChange={(e) => setSellingDate(e.target.value)} className="form-control" placeholder="" />
+                      <input type="date" value={saleDate} onChange={(e) => setSaleDate(e.target.value)} className="form-control" placeholder="" />
                     </div>
 
                     <div className="form-group mb-3">
@@ -221,14 +227,23 @@ export default function SellingIndex() {
 
                     <div className="form-group mb-3">
                       <label className="mb-1 fw-bold">Alamat Pelanggan</label>
-                      {/* <input type="text" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="form-control"
-                        placeholder="" /> */}
-                        <textarea name="" id="" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="form-control"></textarea>
+                      <textarea name="" id="" value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} className="form-control"></textarea>
                     </div>
 
                     <div className="form-group mb-3">
                       <label className="mb-1 fw-bold">Ongkir</label>
-                      <input type="number" value={ongkir} onChange={(e) => setOngkir(e.target.value)} className="form-control"
+                      <input type="number" value={ongkir} onChange={(e) => setOngkir(parseInt(e.target.value))} className="form-control"
+                        placeholder="" />
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <input type="checkbox" id="isSave" value={isSaveCustomer} onChange={(e) => setIsSaveCustomer(e.target.value)}/>
+                      <label className="ms-1 mb-1 fw-bold" htmlFor="isSave">Simpan data pelanggan</label>
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label className="mb-1 fw-bold">Total</label>
+                      <input type="number" value={price} readOnly={true} className="form-control bg-light"
                         placeholder="" />
                     </div>
 
