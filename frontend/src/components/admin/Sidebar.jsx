@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 
 export default function Sidebar() {
   const navigate = useNavigate()
+  const path = location.pathname
 
   return (
     // <div className="">
@@ -19,25 +20,25 @@ export default function Sidebar() {
     //         </div>
     //     </div>
     // </div>
-    <div className="bg-danger">
+    <div className="bg-white">
       <div className="row mx-0 flex-nowrap h-100">
-        <div className="px-sm-2 px-0 bg-dark h-100">
+        <div className="px-sm-2 px-0 h-100">
           <div className="pt-2 text-white min-vh-100 h-100">
             <a
               href="/"
-              className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+              className="d-flex align-items-center mb-md-0 me-md-auto text-white text-decoration-none"
             >
               <span className="fs-5 d-none d-sm-inline">Menu</span>
             </a>
             <ul
-              className="d-flex flex-column nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+              className="d-flex flex-column nav nav-pills py-0 flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
               id="menu"
             >
               {/* <li>
                 <a
                   href="#submenu1"
                   data-bs-toggle="collapse"
-                  className="nav-link px-0 align-middle"
+                  className="nav-link text-primary px-0 align-middle"
                 >
                   <i className="fs-4 bi-speedometer2" />{" "}
                   <span className="ms-1 d-none d-sm-inline">Dashboard</span>{" "}
@@ -48,29 +49,29 @@ export default function Sidebar() {
                   data-bs-parent="#menu"
                 >
                   <li className="w-100">
-                    <Link to="/admin/menus" className='nav-link px-0'>Menu</Link>
+                    <Link to="/admin/menus" className='nav-link text-primary px-0'>Menu</Link>
                   </li>
                   <li>
-                  <Link to="/admin/materials" className='nav-link px-0'>Material</Link>
+                  <Link to="/admin/materials" className='nav-link text-primary px-0'>Material</Link>
                   </li>
                 </ul>
               </li> */}
-              <li>
-                <Link to="/dashboard" className="nav-link px-0 align-middle">
+              <li className={path=='/admin/dashboard' ? 'w-100 bg-primary rounded px-2':''}>
+                <Link to="/admin/dashboard" className={`nav-link text-primary p-0 align-middle ${path=='/admin/dashboard' ? "text-white": ''}`}>
                 
                   <i className="fs-4 bi-people" />{" "}
                   <span className="ms-1 d-none d-sm-inline">Dashboard</span>{" "}
                   </Link>
               </li>
-              <li>
-                <Link to="/admin/menus" className="nav-link px-0 align-middle">
+              <li className={path=='/admin/menus' ? 'w-100 bg-primary rounded px-2':''}>
+                <Link to="/admin/menus" className={`nav-link text-primary p-0 align-middle ${path=='/admin/menus' ? "text-white": ''}`}>
                 
                   <i className="fs-4 bi-people" />{" "}
                   <span className="ms-1 d-none d-sm-inline">Menu</span>{" "}
                   </Link>
               </li>
-              <li>
-                <Link to="/admin/materials" className="nav-link px-0 align-middle">
+              <li className={path=='/admin/materials' ? 'w-100 bg-primary rounded px-2':''}>
+                <Link to="/admin/materials" className={`nav-link text-primary p-0 align-middle ${path=='/admin/materials' ? "text-white": ''}`}>
                 
                   <i className="fs-4 bi-people" />{" "}
                   <span className="ms-1 d-none d-sm-inline">Material</span>{" "}
@@ -83,7 +84,7 @@ export default function Sidebar() {
               id="menu"
             >
             <li>
-                <Link to="/admin/materials" className="nav-link px-0 align-middle">
+                <Link to="/admin/materials" className="nav-link text-primary px-0 align-middle">
                 
                   <i className="fs-4 bi-people" />{" "}
                   <span className="ms-1 d-none d-sm-inline text-danger">Logout</span>{" "}

@@ -92,7 +92,7 @@ export default function MaterialIndex() {
                 <div className="card border-0">
                   <div className="card-body">
                     <h5 className="card-title mb-5">Data Bahan</h5>
-                    <table class="table">
+                    <table className="table">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
@@ -111,7 +111,7 @@ export default function MaterialIndex() {
                             <td>{item.price}</td>
                             <td>{item.unit}</td>
                             <td>
-                              <button onClick={() => getMaterial(item)} className="btn btn-sm btn-primary">EDIT</button>
+                              <button onClick={() => getMaterial(item)} className="btn btn-sm btn-primary">Edit</button>
                             </td>
                           </tr>
                         ))}
@@ -131,7 +131,7 @@ export default function MaterialIndex() {
                 <h5 className="card-title mb-5">Form Data Bahan</h5>
                 <form onSubmit={isEdit? editMaterial : createMaterial}>
                 <div className="form-group mb-3">
-                    <input type="text" value={id} className="form-control"
+                    <input type="text" value={id} onChange={setId} className="form-control"
                       placeholder="" hidden/>
                   </div>
                   <div className="form-group mb-3">

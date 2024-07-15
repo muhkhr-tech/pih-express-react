@@ -11,6 +11,7 @@ const findMenus = async (req, res) => {
             name: true,
             price: true,
             description: true,
+            image:true,
             active: true
         }
     })
@@ -22,6 +23,26 @@ const findMenus = async (req, res) => {
     })
 }
 
+const findImageMenu = async (req, res) => {
+    const { id } = req.params
+
+    const menu = await prisma.menu.findUnique({
+        where: {
+            id: Number(id)
+        },
+        select: {
+            image: true
+        }
+    })
+
+    res.status(200).send({
+        success: true,
+        message: "Get all menu successfully.",
+        data: menu
+    })
+}
+
 module.exports = {
-    findMenus
+    findMenus,
+    findImageMenu
 }

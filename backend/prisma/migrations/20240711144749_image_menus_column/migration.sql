@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `menus` ADD COLUMN `image` VARCHAR(255) NOT NULL DEFAULT '';

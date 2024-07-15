@@ -50,8 +50,9 @@ export default function AdminMenuIndex() {
                     <th scope="col">No.</th>
                     <th scope="col">Food/Beverage</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Image</th>
                     <th scope="col">Status</th>
-                    <th scope="col" style={{ width: "17%" }}>Actions</th>
+                    <th scope="col" style={{ width: "30%" }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -62,10 +63,12 @@ export default function AdminMenuIndex() {
                           <td>{index+1}</td>
                           <td>{menu.name}</td>
                           <td>{menu.price}</td>
-                          <td style={{minWidth: "20px", maxWidth: "20px"}}>{menu.active ? <span className="bg-warning badge">Active</span> : <span className="bg-secondary badge">Inactive</span>}</td>
+                          <td>{menu.image ? <i className="fa fa-check text-success"></i> : <i className="fa fa-times text-danger"></i>}</td>
+                          <td style={{minWidth: "20px", maxWidth: "20px"}}>{menu.active ? <span className="bg-success badge">Active</span> : <span className="bg-secondary badge">Inactive</span>}</td>
                           <td className="text-center">
-                            <Link to={`/admin/menus/edit/${menu.id}`} className="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">EDIT</Link>
-                            <button onClick={() => updateStatusMenu(menu.id)} className="btn btn-sm btn-warning rounded-sm shadow border-0">STATUS</button>
+                            <Link to={`/admin/menus/edit/${menu.id}`} className="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">Edit</Link>
+                            <Link to={`/admin/menus/image/${menu.id}`} className="btn btn-sm btn-warning rounded-sm shadow border-0 me-2">Upload Image</Link>
+                            <button onClick={() => updateStatusMenu(menu.id)} className="btn btn-sm btn-secondary rounded-sm shadow border-0">Status</button>
                           </td>
                         </tr>
                       ))

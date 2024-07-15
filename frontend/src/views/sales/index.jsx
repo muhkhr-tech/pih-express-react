@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import api from "../../services/api"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../../components/Navbar"
+import Header from "../../components/Header"
 
 export default function SaleIndex() {
   const navigate = useNavigate()
@@ -39,7 +40,7 @@ export default function SaleIndex() {
     e.preventDefault()
 
     let updatedCart = initCart.map(item => {
-      let { id, name, description, active, ...rest } = item
+      let { id, name, description, active, image, ...rest } = item
       return rest
     })
 
@@ -113,9 +114,6 @@ export default function SaleIndex() {
     }
     setPrice(updatedTotal)
 
-    if (cart.length < 1) {
-      navigate('/')
-    }
   }, [isUpdateTotal, cart, totalItem, ongkir])
 
   const fetchDataCustomers = async () => {
@@ -142,8 +140,12 @@ export default function SaleIndex() {
 
   return (
     <div>
+      <Header/>
       <Navbar totalItem={totalItem} />
       <div className="container">
+        <div className="row mb-4">
+          <Link to={"/sales/history"}><i className="fa-solid fa-file-lines"></i> History</Link>
+        </div>
         <div className="row">
           {
             validation.errors && (
@@ -160,7 +162,7 @@ export default function SaleIndex() {
             cart.length > 0
               ? <div className="col-md-6">
                 {cart.map((item, index) => (
-                  <div className="card mb-1 border-0" key={index}>
+                  <div className="card mb-1 p-0" key={index}>
                     <div className="card-body">
                       <div className="d-flex justify-content-between">
                         <div>
@@ -174,9 +176,9 @@ export default function SaleIndex() {
                         </div>
                       </div>
                       <div className="d-flex align-items-center">
-                        <button onClick={() => minusItem(item)}>-</button>
-                        <div className="px-3">{item.amount}</div>
-                        <button onClick={() => plusItem(item)}>+</button>
+                        <button onClick={() => minusItem(item)} className="btn btn-sm btn-outline-danger">-</button>
+                        <div className="px-2">{item.amount}</div>
+                        <button onClick={() => plusItem(item)} className="btn btn-sm btn-outline-success">+</button>
                       </div>
                     </div>
                   </div>
@@ -188,7 +190,7 @@ export default function SaleIndex() {
           {
             cart.length > 0
             && <div className="col-md-6">
-              <div className="card border-0">
+              <div className="card py-0 border-0">
                 <div className="card-body">
                   <h5 className="card-title mb-5">Data Penjualan</h5>
                   <form onSubmit={createSale}>
@@ -237,7 +239,7 @@ export default function SaleIndex() {
                     </div>
 
                     <div className="form-group mb-3">
-                      <input type="checkbox" id="isSave" value={isSaveCustomer} onChange={(e) => setIsSaveCustomer(e.target.value)}/>
+                      <input type="checkbox" id="isSave" value={isSaveCustomer} onChange={(e) => setIsSaveCustomer(e.target.value)} />
                       <label className="ms-1 mb-1 fw-bold" htmlFor="isSave">Simpan data pelanggan</label>
                     </div>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import api from "../../services/api"
 import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../../components/Navbar"
+import Header from "../../components/Header"
 
 export default function PurchaseIndex() {
   const navigate = useNavigate()
@@ -24,6 +25,7 @@ export default function PurchaseIndex() {
 
   const [purchaseDate, setPurchaseDate] = useState('')
   const [description, setDescription] = useState('Pembelian barang')
+  const [stores, setStores] = useState([])
   const [storeName, setStoreName] = useState('')
   const [storePhone, setStorePhone] = useState('')
   const [storeAddress, setStoreAddress] = useState('')
@@ -33,6 +35,7 @@ export default function PurchaseIndex() {
   const [cart, setCart] = useState(initCart)
   const [totalPrice, setTotalPrice] = useState(0)
   const [isUpdateTotal, setIsUpdteTotal] = useState(false)
+  const [isSaveStore, setIsSaveStore] = useState(false)
   
   const [isSearchInputClean, setIsSearchInputClean] = useState(false)
 
@@ -61,6 +64,14 @@ export default function PurchaseIndex() {
       let { id, name, ...rest } = item
       return rest
     })
+
+    if (isSaveStore) {
+      await api.post('/api/stores', {
+        name: storeName,
+        phone: storePhone,
+        address: storeAddress
+      })
+    }
 
     await api.post('/api/purchases', {
       purchaseDate: purchaseDate,
@@ -142,10 +153,35 @@ export default function PurchaseIndex() {
     setIsSearchInputClean(!isSearchInputClean)
   }
 
+  const fetchDataStores = async () => {
+    try {
+      const response = await api.get('/api/stores')
+      setStores(response.data.data)
+    } catch (error) {
+      console.error("There was an error fetching the stores!", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchDataStores()
+  }, [])
+
+  const selectStore = (e) => {
+    const store = JSON.parse(e.target.value)
+
+    setStoreName(store.name)
+    setStorePhone(store.phone)
+    setStoreAddress(store.address)
+  }
+
   return (
     <div>
+      <Header/>
       <Navbar totalItem={totalItem} />
       <div className="container">
+        <div className="row mb-4">
+          <Link to={"/purchases/history"}><i className="fa-solid fa-file-lines"></i> History</Link>
+        </div>
         <div className="row">
           {
             validation.errors && (
@@ -199,7 +235,7 @@ export default function PurchaseIndex() {
           </div>
 
           <div className="col-md-4">
-            <div className="card border-0">
+            <div className="card pt-0 border-0">
               <div className="card-body">
                 <h5 className="card-title">Data Pembelian Barang</h5>
                 {
@@ -231,7 +267,7 @@ export default function PurchaseIndex() {
           </div>
 
           <div className="col-md-4">
-            <div className="card border-0">
+            <div className="card pt-0 border-0">
               <div className="card-body">
                 {/* <h5 className="card-title mb-5">Data Pembelian Barang</h5> */}
                 <form onSubmit={createPurchase}>
@@ -245,6 +281,16 @@ export default function PurchaseIndex() {
                     <input type="text" value={description} onChange={(e) => setDescription(e.target.value)} className="form-control"
                       placeholder="" />
                   </div>
+
+                  <div className="form-group mb-3">
+                      <label className="mb-1 fw-bold">Toko</label>
+                      <select className="form-select" onChange={(e) => selectStore(e)}>
+                        <option value="">-Pilih-</option>
+                        {stores.map((store, index) => (
+                          <option key={index} value={JSON.stringify(store)}>{store.name}</option>
+                        ))}
+                      </select>
+                    </div>
 
                   <div className="form-group mb-3">
                     <label className="mb-1 fw-bold">Nama Toko</label>
@@ -262,6 +308,11 @@ export default function PurchaseIndex() {
                     <label className="mb-1 fw-bold">Alamat Toko</label>
                     <textarea name="" id="" className="form-control" value={storeAddress} onChange={(e) => setStoreAddress(e.target.value)}></textarea>
                   </div>
+
+                  <div className="form-group mb-3">
+                      <input type="checkbox" id="isSave" value={isSaveStore} onChange={(e) => setIsSaveStore(e.target.value)} />
+                      <label className="ms-1 mb-1 fw-bold" htmlFor="isSave">Simpan data toko</label>
+                    </div>
 
                   <div className="form-group mb-3">
                     <label className="mb-1 fw-bold">Total</label>

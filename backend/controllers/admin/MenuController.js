@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator')
 const prisma = require('../../prisma/client')
+const path = require('path')
 
 const findMenus = async (req, res) => {
 
@@ -9,6 +10,7 @@ const findMenus = async (req, res) => {
             name: true,
             price: true,
             description: true,
+            image: true,
             active: true
         }
     })
@@ -31,7 +33,8 @@ const findMenuById = async (req, res) => {
             id: true,
             name: true,
             price: true,
-            description: true
+            description: true,
+            image: true
         }
     })
 
@@ -103,6 +106,60 @@ const updateMenu = async (req, res) => {
     }
 }
 
+const uploadImageMenu = async (req, res) => {
+    const { id } = req.params
+    
+    try {
+        const menu = await prisma.menu.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                image: 'static/data/uploads/image-menu-'+id+path.extname(req.file.originalname)
+            }
+        })
+
+        res.status(200).send({
+            success: true,
+            message: "Menu updated image successfully.",
+            data: menu
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
+const deleteImageMenu = async (req, res) => {
+    const { id } = req.params
+    
+    try {
+        const menu = await prisma.menu.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                image: ''
+            }
+        })
+
+        res.status(200).send({
+            success: true,
+            message: "Menu deleted image successfully.",
+            data: menu
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: "Internal server error."
+        })
+    }
+}
+
 const changeStatusMenu = async (req, res) => {
     const { id } = req.params
 
@@ -130,6 +187,35 @@ const changeStatusMenu = async (req, res) => {
         })
     }
 }
+
+// const uploadMenuImage = async (req, res) => {
+//     upload.single('file')
+//     // const { id } = req.params
+
+//     try {
+//         // const getMenu = await prisma.menu.findUnique({where: {id: Number(id)}})
+
+//         // const menu = await prisma.menu.update({
+//         //     where: {
+//         //         id: Number(id)
+//         //     },
+//         //     data: {
+//         //         active: !getMenu.active
+//         //     }
+//         // })
+
+//         res.status(200).send({
+//             success: true,
+//             message: "Menu changed status successfully.",
+//             data: []
+//         })
+//     } catch (error) {
+//         res.status(500).send({
+//             success: false,
+//             message: "Internal server error."
+//         })
+//     }
+// }
 
 const deleteMenu = async (req, res) => {
     const { id } = req.params
@@ -160,5 +246,6 @@ module.exports = {
     createMenu,
     updateMenu,
     changeStatusMenu,
+    uploadImageMenu,
     deleteMenu
 }

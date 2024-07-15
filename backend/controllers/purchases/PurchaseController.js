@@ -12,6 +12,9 @@ const findPurchases = async (req, res) => {
             storeAddress: true,
             price: true,
             materials: true
+        },
+        orderBy: {
+            purchaseDate: 'desc'
         }
     })
 
@@ -37,11 +40,34 @@ const findPurchaseById = async (req, res) => {
             storePhone: true,
             storeAddress: true,
             price: true,
-            materials: true,
-            createdAt: true
+            createdAt: true,
+            materials: {
+                select: {
+                    price: true,
+                    amount: true,
+                    unit: true,
+                    material: {
+                        select: {
+                            name: true,
+                            unit: true,
+                            price: true
+                        }
+                    }
+                }
+            }
         }
     })
 
+    res.status(200).send({
+        success: true,
+        message: "Get all purchases successfully.",
+        data: purchases
+    })
+}
+
+const findTotalPurchases = async (req, res) => {
+    const purchases = await prisma.$queryRaw`SELECT purchaseDate, SUM(price) as total FROM purchases GROUP BY purchaseDate ORDER BY purchaseDate DESC`
+    
     res.status(200).send({
         success: true,
         message: "Get all purchases successfully.",
@@ -86,5 +112,6 @@ const createPurchase = async (req, res) => {
 module.exports = {
     findPurchases,
     findPurchaseById,
+    findTotalPurchases,
     createPurchase
 }

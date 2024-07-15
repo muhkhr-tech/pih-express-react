@@ -2,9 +2,9 @@ const { validationResult } = require('express-validator')
 const prisma = require('../../prisma/client')
 const slugify = require('slugify')
 
-const findCustomers = async (req, res) => {
+const findStores = async (req, res) => {
 
-    const customers = await prisma.customer.findMany({
+    const stores = await prisma.store.findMany({
         where: {
             active: true
         },
@@ -18,15 +18,15 @@ const findCustomers = async (req, res) => {
 
     res.status(200).send({
         success: true,
-        message: "Get all customer successfully.",
-        data: customers
+        message: "Get all store successfully.",
+        data: stores
     })
 }
 
-const findCustomerById = async (req, res) => {
+const findStoreById = async (req, res) => {
     const { id } = req.params
 
-    const customer = await prisma.customer.findUnique({
+    const store = await prisma.store.findUnique({
         where: {
             id: Number(id)
         },
@@ -40,14 +40,14 @@ const findCustomerById = async (req, res) => {
 
     res.status(200).send({
         success: true,
-        message: `Get customer by ID ${id} successfully.`,
-        data: customer
+        message: `Get store by ID ${id} successfully.`,
+        data: store
     })
 }
 
-const createCustomer = async (req, res) => {
+const createStore = async (req, res) => {
     try {
-        const customer = await prisma.customer.create({
+        const store = await prisma.store.create({
             data: {
                 name: req.body.name,
                 address: req.body.address,
@@ -58,14 +58,14 @@ const createCustomer = async (req, res) => {
 
         res.status(201).send({
             success: true,
-            message: "Customer created successfully.",
-            data: customer
+            message: "Store created successfully.",
+            data: store
         })
     } catch (error) {
         if (error.code == 'P2002') {
             res.status(200).send({
                 success: true,
-                message: "Customer created successfully."
+                message: "Store created successfully."
             })
         } else {
             res.status(500).send({
@@ -77,7 +77,7 @@ const createCustomer = async (req, res) => {
 }
 
 module.exports = {
-    findCustomers,
-    findCustomerById,
-    createCustomer
+    findStores,
+    findStoreById,
+    createStore
 }
