@@ -6,6 +6,16 @@ export default function Sidebar() {
   const navigate = useNavigate()
   const path = location.pathname
 
+  const handleLogout = () => {
+    try {
+      Cookies.remove('token')
+      Cookies.remove('user')
+      navigate('/')
+    } catch (error) {
+      console.log('Cannot logout!');
+    }
+  }
+
   return (
     // <div className="">
     //     <div className="">
@@ -84,11 +94,11 @@ export default function Sidebar() {
               id="menu"
             >
             <li>
-                <Link to="/admin/materials" className="nav-link text-primary px-0 align-middle">
+                <button onClick={handleLogout} className='btn bg-0 ps-0'>
                 
                   <i className="fs-4 bi-people" />{" "}
                   <span className="ms-1 d-none d-sm-inline text-danger">Logout</span>{" "}
-                  </Link>
+                  </button>
               </li>
             </ul>
             {/* <div className="dropdown pb-4">
