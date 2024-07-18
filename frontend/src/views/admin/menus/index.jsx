@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cookies from 'js-cookie'
 import api from "../../../services/api";
 import { Link } from "react-router-dom";
 import Sidebar from "../../../components/admin/Sidebar";
@@ -8,12 +9,20 @@ export default function AdminMenuIndex() {
   const [changeStatus, setChangeStatus] = useState(false)
 
   const fetchDataMenu = async () => {
-    try {
-      const response = await api.get('/api/admin/menus')
+    const token = Cookies.get('token')
 
-      setMenus(response.data.data)
-    } catch (error) {
-      console.error("There was an error fetching the menus!", error);
+    if (token) {
+      api.defaults.headers.common['Authorization'] = token
+      
+      try {
+        const response = await api.get('/api/admin/menus')
+
+        setMenus(response.data.data)
+      } catch (error) {
+        console.error("There was an error fetching the menus!", error);
+      }
+    } else {
+      console.log('Token is not available')
     }
   }
 
@@ -60,11 +69,11 @@ export default function AdminMenuIndex() {
                     menus.length > 0
                       ? menus.map((menu, index) => (
                         <tr key={index}>
-                          <td>{index+1}</td>
+                          <td>{index + 1}</td>
                           <td>{menu.name}</td>
                           <td>{menu.price}</td>
                           <td>{menu.image ? <i className="fa fa-check text-success"></i> : <i className="fa fa-times text-danger"></i>}</td>
-                          <td style={{minWidth: "20px", maxWidth: "20px"}}>{menu.active ? <span className="bg-success badge">Active</span> : <span className="bg-secondary badge">Inactive</span>}</td>
+                          <td style={{ minWidth: "20px", maxWidth: "20px" }}>{menu.active ? <span className="bg-success badge">Active</span> : <span className="bg-secondary badge">Inactive</span>}</td>
                           <td className="text-center">
                             <Link to={`/admin/menus/edit/${menu.id}`} className="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">Edit</Link>
                             <Link to={`/admin/menus/image/${menu.id}`} className="btn btn-sm btn-warning rounded-sm shadow border-0 me-2">Upload Image</Link>

@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Login from "../views/auth/login";
 import AdminMaterialIndex from "../views/admin/materials";
+import Register from "../views/auth/register";
 
 export default function AppRoutes() {
   const { isAuthenticated } = useContext(AuthContext)
@@ -32,6 +33,8 @@ export default function AppRoutes() {
       <Route path="/admin/materials" element={isAuthenticated ? <AdminMaterialIndex /> : <Navigate to="/login"/>}/>
 
       <Route path="/login" element={isAuthenticated ? <Navigate to="/admin/dashboard"/> : <Login />} />
+
+      <Route path="/register" element={isAuthenticated ? <Navigate to="/admin/dashboard"/> : <Register />} />
 
       <Route path="/" element={<Index />} />
 
