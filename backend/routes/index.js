@@ -10,11 +10,13 @@ const materialAdminController = require('../controllers/admin/MaterialConstrolle
 const purchaseController = require('../controllers/purchases/PurchaseController')
 const customerController = require('../controllers/customers/CustomerController')
 const storeController = require('../controllers/stores/StoreController')
+const loginController = require('../controllers/auth/LoginController')
 const { validatePurchase } = require('../utils/validators/purchase')
 const { validateSale } = require('../utils/validators/sale')
 const { validateMenu } = require('../utils/validators/menu')
 const upload = require('../utils/upload')
 const verifyToken = require('../middleware/auth')
+const { validateLogin } = require('../utils/validators/auth')
 
 router.get('/admin/menus', verifyToken, menuAdminController.findMenus)
 router.get('/admin/menus/:id', menuAdminController.findMenuById)
@@ -27,6 +29,8 @@ router.delete('/admin/menus/:id', menuAdminController.deleteMenu)
 router.get('/admin/materials', verifyToken, materialAdminController.findMaterials)
 router.post('/admin/materials', materialAdminController.createMaterial)
 router.put('/admin/materials/:id', materialAdminController.updateMaterial)
+
+router.post('/login', validateLogin, loginController.login)
 
 router.get('/materials', materialController.findMaterials)
 
