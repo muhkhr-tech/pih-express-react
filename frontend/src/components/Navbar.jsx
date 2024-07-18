@@ -11,7 +11,7 @@ export default function Navbar(props) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav align-items-center d-flex justify-content-start w-100">
+          <ul className="navbar-nav align-items-center d-flex justify-content-center w-100">
             <li className="nav-item">
               <Link to={'/'} className="nav-link">Home <i className="fa-solid fa-home"></i></Link>
             </li>
@@ -20,9 +20,9 @@ export default function Navbar(props) {
             </li>
             <li className="nav-item" style={{ position: 'relative' }}>
               <Link to={'/sales'} className="nav-link">
-                Sale <i className={totalItem > 0 ? "fa-solid fa-cart-shopping" : "fa-solid fa-cart-shopping"}></i>
+                Sale <i className="fa-solid fa-cart-shopping"></i>
                 {totalItem > 0 ?
-                  <span className="bg-warning rounded-circle d-flex justify-content-center align-items-center text-white fw-bold" style={{ width: '20px', height: '20px', position: 'absolute', top: '0px', right: '-15px', fontSize: '13px' }}>{totalItem}</span> : ''}
+                  <span className="bg-danger rounded-circle d-flex justify-content-center align-items-center text-white fw-bold" style={{ width: '20px', height: '20px', position: 'absolute', top: '0px', right: '-15px', fontSize: '13px' }}>{totalItem}</span> : ''}
               </Link>
             </li>
           </ul>

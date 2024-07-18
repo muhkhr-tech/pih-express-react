@@ -72,7 +72,7 @@ export default function Index() {
                 <div className="col-md-3 px-4 mb-5" key={index}>
                   <div className={"card border-0 p-1"} style={{ minHeight: '260px', maxHeight: '500px' }}>
                     {cart.findIndex((item) => item.id == menu.id) > -1
-                      ? (<span className="bg-warning badge" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: '999' }}>
+                      ? (<span className="bg-danger badge" style={{ position: 'absolute', top: '10px', right: '10px', zIndex: '999' }}>
                         {cart[cart.findIndex((item) => item.id == menu.id)].amount} porsi</span>) : ''}
                     <div style={{ width: '100%', height: '250px' }} className="d-flex justify-content-center align-items-center shadow-sm rounded bg-white mb-2">
                       <img src={`${process.env.BASE_URL}/${menu.image}`} className="rounded" style={{ objectFit: 'cover', width: '98%', height: '98%' }} />

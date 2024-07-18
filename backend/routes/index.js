@@ -14,8 +14,9 @@ const { validatePurchase } = require('../utils/validators/purchase')
 const { validateSale } = require('../utils/validators/sale')
 const { validateMenu } = require('../utils/validators/menu')
 const upload = require('../utils/upload')
+const verifyToken = require('../middleware/auth')
 
-router.get('/admin/menus', menuAdminController.findMenus)
+router.get('/admin/menus', verifyToken, menuAdminController.findMenus)
 router.get('/admin/menus/:id', menuAdminController.findMenuById)
 router.post('/admin/menus', validateMenu, menuAdminController.createMenu)
 router.put('/admin/menus/:id', menuAdminController.updateMenu)
@@ -23,7 +24,7 @@ router.put('/admin/menus/:id/change-status', menuAdminController.changeStatusMen
 router.post('/admin/menus/:id/upload', upload.single('image'), menuAdminController.uploadImageMenu)
 router.delete('/admin/menus/:id', menuAdminController.deleteMenu)
 
-router.get('/admin/materials', materialAdminController.findMaterials)
+router.get('/admin/materials', verifyToken, materialAdminController.findMaterials)
 router.post('/admin/materials', materialAdminController.createMaterial)
 router.put('/admin/materials/:id', materialAdminController.updateMaterial)
 

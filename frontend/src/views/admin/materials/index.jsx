@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../../../components/Navbar"
 import Sidebar from "../../../components/admin/Sidebar"
 
-export default function MaterialIndex() {
+export default function AdminMaterialIndex() {
   const navigate = useNavigate()
 
   const [materials, setMaterials] = useState([])
@@ -18,7 +18,7 @@ export default function MaterialIndex() {
 
   const fetchDataMaterials = async () => {
     try {
-      const response = await api.get('/api/materials')
+      const response = await api.get('/api/admin/materials')
       setMaterials(response.data.data)
     } catch (error) {
       console.error("There was an error fetching the materials!", error);
